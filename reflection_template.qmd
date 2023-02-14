@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an B.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from a Lab or Challenge assignment where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -22,19 +22,27 @@ execute:
 -   `csv`
 
 ```{r wd-1-csv}
+# Lab2 Q2
+surveys <- read_csv(here("Week 2", "Lab 2", "surveys.csv"))
 
 ```
 
 -   `xlsx`
 
 ```{r wd-1-xlsx}
-
+# PA4 Q1
+military <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip = 7, 
+                      n_max = 191)
 ```
 
 -   `txt`
 
 ```{r wd-1-txt}
-
+# PA 5.2 Q1
+message <- read_csv(here::here("scrambled_message.txt")
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
