@@ -69,19 +69,38 @@ colleges_clean <- colleges_clean |>
 -   character -- specifically a string
 
 ```{r wd-3-string}
-
+# PA 5.2 Q3
+message |>
+  filter(str_detect(Word, pattern = '^m'))
 ```
 
 -   factor
 
 ```{r wd-3-factor}
+# lab 3 Q 13
+hiphop_clean |>
+  filter(ethnic == 'white', sex == "Male", age > 30, 
+         familiarity == 5) |>
+  arrange(familiarity, desc(familiarity), by_group = TRUE) |>
+  group_by(familiarity) |>
+  count(word, sort=TRUE)
+
+hiphop_clean |>
+  filter(ethnic == 'white', sex == "Male", age > 30,
+         familiarity == 1) |>
+  arrange(familiarity, desc(familiarity), by_group = TRUE) |>
+  group_by(familiarity) |>
+  count(word, sort=TRUE)
 
 ```
 
 -   date
 
 ```{r wd-3-date}
+# PA 5.1 Q1
 
+suspects <- suspects %>% 
+  filter(pm(Time.Spotted))
 ```
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -101,13 +120,23 @@ colleges_clean <- colleges_clean |>
 -   factor
 
 ```{r wd-4-factor}
+# lab 5 Q 8
+surveys4 <- surveys |>
+  select(genus, weight, day_of_week)
 
+ggplot(data=surveys4, mapping = aes(x = fct_relevel(day_of_week, c('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')), fill = genus)) +
+  geom_bar() +
+  labs(x = 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
 
 -   date
 
 ```{r wd-4-date}
-
+# PA 5.1 Q 1
+suspects <- suspects %>% 
+  mutate(Time.Spotted = ymd_hms(Time.Spotted), 
+         Time.Spotted = force_tz(Time.Spotted, 
+                                 tzone = "America/Los_Angeles"))
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
