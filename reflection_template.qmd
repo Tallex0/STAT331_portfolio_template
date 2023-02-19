@@ -108,13 +108,24 @@ suspects <- suspects %>%
 -   numeric
 
 ```{r wd-4-numeric}
-
+# PA 3 Q4
+colleges_clean <- colleges_clean |> 
+  mutate(
+    TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
+    TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
+    SAT_AVG = as.numeric(SAT_AVG),
+    ADM_RATE = as.numeric(ADM_RATE),
+    UGDS = as.numeric(UGDS)
+    ) 
 ```
 
 -   character -- specifically a string
 
 ```{r wd-4-string}
-
+# PA 5.2 Q1
+message %>% 
+  mutate(length = str_length(Word)) %>% 
+  summarise(total_length = sum(length))
 ```
 
 -   factor
@@ -144,25 +155,33 @@ suspects <- suspects %>%
 -   `left_join()`
 
 ```{r wd-5-left}
-
+# prev act 11 
+profs |>
+  left_join(prof_info, prof_course)
 ```
 
 -   `right_join()`
 
 ```{r wd-5-right}
-
+# prev act 11 Q1
+profs |>
+  right_join(prof_info, prof_course)
 ```
 
 -   `inner_join()`
 
 ```{r wd-5-inner}
-
+# prev act 11
+profs |>
+  inner_join(prof_info, prof_course)
 ```
 
 -   `full_join()`
 
 ```{r wd-5-full}
-
+# Prev Activity 11 Q2
+profs|>
+  full_join(prof_info, prof_course)
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -170,13 +189,19 @@ suspects <- suspects %>%
 -   `semi_join()`
 
 ```{r wd-6-semi}
-
+# Lab4 Q2
+major_avocado <- avocado_clean |>
+  semi_join(regions_major, by = 'region')
 ```
 
 -   `anti_join()`
 
 ```{r wd-6-anti}
-
+# Lab4 Q2
+metro_avocado <- avocado_clean |>
+  anti_join(regions_nonmajor, by = 'region') |>
+  anti_join(regions_major, by = 'region') |>
+  filter(region != "TotalUS")
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -184,13 +209,24 @@ suspects <- suspects %>%
 -   `pivot_longer()`
 
 ```{r wd-7-long}
-
+# lab4 Q7
+avocado_final <- avocado_clean|>
+  filter(region %in% c('LosAngeles', 'SanDiego', 'Sacramento', 'SanFrancisco')) |>
+  pivot_longer(small_avocado:xlarge_avocado, names_to = 'size', values_to = 'quantity') |>
+  group_by(region, type, size) |>
+  summarise(mean_sold = mean(quantity), proportion = quantity / total_volume)
 ```
 
 -   `pivot_wider()`
 
 ```{r wd-7-wide}
-
+# Lab4 Q6
+cal_avocado <- avocado_clean |>
+  group_by(region, type) |>
+  semi_join(cal_regions, by = 'region') |>
+  summarise(mean_price = mean(AveragePrice)) |>
+  pivot_wider(names_from = type , values_from = mean_price) |>
+  mutate(diff = conventional - organic)
 ```
 
 ## Reproducibility
@@ -358,7 +394,7 @@ I've done this in the following provided assignments:
 -   `map()` functions
 
 ```{r pe-1-map-1}
-
+#havent covered yet
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -366,13 +402,13 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r pe2-1}
-
+#havent covered yet
 ```
 
 -   Example 2
 
 ```{r pe2-2}
-
+#havent covered yet
 ```
 
 **PE-3:I can use iteration to reduce repetition in my code.**
@@ -386,11 +422,11 @@ I've done this in the following provided assignments:
 -   `map()` functions (Provide 2 Examples)
 
 ```{r pe-3-map-1}
-
+#havent covered yet
 ```
 
 ```{r pe-3-map-2}
-
+#havent covered yet
 ```
 
 **PE-4: I can use modern tools when carrying out my analysis.**
@@ -398,13 +434,23 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r pe-4-1}
+#Lab 5 Q1
+ggplot(data=surveys, mapping = aes(x=weight, y= fct_reorder(species, weight))) +
+  geom_jitter(color= "darkseagreen") +
+  geom_boxplot(outlier.shape = NA, alpha = 0.1) +
+  labs(x="Weight (g)", y= '', title = "Rat Species vs. Weight")
 
+# This uses modern tools because none of the functions in the code are superceded/deprecated.
 ```
 
 -   Example 2
 
 ```{r pe-4-2}
-
+#lab4 Q3
+major_avocado |>
+  filter(year == '2017', type == 'organic') |>
+  slice_max(region)
+#This is another example that uses modern tools because none of the functions in the code are superceded/deprecated. 
 ```
 
 ## Data Simulation & Modeling
@@ -414,13 +460,13 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dsm-1-1}
-
+#havent covered yet
 ```
 
 -   Example 2
 
 ```{r dsm-1-2}
-
+#havent covered yet
 ```
 
 **DSM-2: I can fit a linear regression and extract necessary summary measures.**
@@ -428,23 +474,29 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dsm-2-1}
-
+#havent covered yet
 ```
 
 -   Example 2
 
 ```{r dsm-2-2}
-
+#havent covered yet
 ```
 
 ## Revising My Thinking
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
+\-
+
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+\-
+
 ## Peer Support & Collaboration
 
 <!-- Include an image of feedback you gave that you are proud of (either in a peer review or in Discord) -->
+
+![](images/Screenshot%202023-02-16%20at%2010.46.38%20AM.png)
