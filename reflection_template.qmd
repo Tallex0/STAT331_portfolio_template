@@ -240,13 +240,33 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r r-2-1}
+#PA4 Q1
+military <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip = 7, 
+                      n_max = 191)
 
+military_clean <- military |>
+  mutate(across(.col = `Notes`:`2019`, 
+         .fns = na_if,
+         '. .')) |>
+  mutate(across(.col = `Notes`:`2019`, 
+                .fns = na_if,
+                'xxx')) |>
+  mutate(across(.col = `1988`:`2019`,
+                .fns = as.numeric))
 ```
 
 -   Example 2
 
 ```{r r-2-2}
-
+#PA3 Q1
+colleges_clean <- colleges |> 
+  select(INSTNM, CITY, STABBR, ZIP,
+         ADM_RATE, SAT_AVG, UGDS,
+         TUITIONFEE_IN, TUITIONFEE_OUT,
+         CONTROL, REGION) 
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -254,13 +274,26 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r r-3-1}
-
+#Lab2 Q7
+ggplot(data=surveys) + 
+  geom_jitter(mapping=aes(x=weight, y=hindfoot_length, alpha = 0.1 ), position="jitter") + 
+  labs(title = "Species Weight vs. Hindfoot Length", 
+  x= "Weight (g)", y= "Hindfoot Length (mm)") +
+  facet_wrap(~species)
 ```
 
 -   Example 2
 
 ```{r r-3-2}
-
+#PA3 Q4
+colleges_clean <- colleges_clean |> 
+  mutate(
+    TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
+    TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
+    SAT_AVG = as.numeric(SAT_AVG),
+    ADM_RATE = as.numeric(ADM_RATE),
+    UGDS = as.numeric(UGDS)
+    ) 
 ```
 
 ## Data Visualization & Summarization
@@ -270,25 +303,46 @@ I've done this in the following provided assignments:
 -   numeric variables
 
 ```{r dvs-1-num}
-
+#Lab2 Q4
+# Code for question 4! 
+ggplot(data=surveys) + 
+  geom_point(mapping=aes(x=weight, y=hindfoot_length)) +
+  labs(title = "Species Weight vs. Hindfoot Length", x= "Weight (g)", y= "Hindfoot Length (mm)")
 ```
 
 -   numeric variables and categorical variables
 
 ```{r dvs-2-num-cat}
+#Lab5 Q6
+surveys5 <- surveys |>
+  select(genus, weight, day_of_week)
 
+ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
+  geom_bar() +
+  labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
 
 -   categorical variables
 
 ```{r dvs-2-cat}
-
+#lab3 q6
+hiphop_clean |>
+  distinct(word) |>
+  summarise()
+hiphop_clean
 ```
 
 -   dates
 
 ```{r dvs-2-date}
+#PA 5 Q1
+thanksgiving <- ymd(20181122, tz = "America/Los_Angeles")
 
+         
+int_thanks <- interval((thanksgiving) - days(35), (thanksgiving) + days(35))
+
+suspects <- suspects %>% 
+  filter(Time.Spotted %within% int_thanks)
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -296,13 +350,23 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-2-1}
+#Lab 5 Q5
+surveys4 <- surveys |>
+  select(genus, weight, day_of_week)
 
+ggplot(data=surveys4, mapping = aes(x = fct_relevel(day_of_week, c('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')), fill = genus)) +
+  geom_bar() +
+  labs(x = 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
 
 -   Example 2
 
 ```{r dvs-2-2}
-
+#Lab2 Q6
+ggplot(data=surveys) + 
+  geom_jitter(mapping=aes(x=weight, y=hindfoot_length, alpha = 0.1 ), position="jitter") + 
+  labs(title = "Species Weight vs. Hindfoot Length", 
+  x= "Weight (g)", y= "Hindfoot Length (mm)")
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -310,13 +374,25 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-3-1}
+# Lab5 Q 6
+surveys5 <- surveys |>
+  select(genus, weight, day_of_week)
 
+ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
+  geom_bar() +
+  labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
 
 -   Example 2
 
 ```{r dvs-3-2}
+#Lab5 Q1
+surveys <- read_csv(here("Week 2", "Lab 2", "surveys.csv"))
 
+ggplot(data=surveys, mapping = aes(x=weight, y= fct_reorder(species, weight))) +
+  geom_jitter(color= "darkseagreen") +
+  geom_boxplot(outlier.shape = NA, alpha = 0.1) +
+  labs(x="Weight (g)", y= '', title = "Rat Species vs. Weight")
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
@@ -324,13 +400,23 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-4-1}
-
+#Lab4 Q6
+cal_avocado <- avocado_clean |>
+  group_by(region, type) |>
+  semi_join(cal_regions, by = 'region') |>
+  summarise(mean_price = mean(AveragePrice)) |>
+  pivot_wider(names_from = type , values_from = mean_price) |>
+  mutate(diff = conventional - organic)
 ```
 
 -   Example 2
 
 ```{r dvs-4-2}
-
+#Lab5 Q3
+surveys3 <- surveys |>
+  select(genus, weight, year) |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -338,13 +424,25 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-5-1}
-
+#Lab3 Q9
+hiphop_clean |>
+  select(subj, sex, age, ethnic) |>
+  distinct(subj, .keep_all = TRUE) |>
+  summary()
+count(hiphop_clean)
+hiphop_clean
 ```
 
 -   Example 2
 
 ```{r dvs-5-2}
-
+#Lab4 Q6
+cal_avocado <- avocado_clean |>
+  group_by(region, type) |>
+  semi_join(cal_regions, by = 'region') |>
+  summarise(mean_price = mean(AveragePrice)) |>
+  pivot_wider(names_from = type , values_from = mean_price) |>
+  mutate(diff = conventional - organic)
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -352,13 +450,24 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-6-1}
-
+#Lab3 Q9
+hiphop_clean |>
+  select(subj, sex, age, ethnic) |>
+  distinct(subj, .keep_all = TRUE) |>
+  summary()
+count(hiphop_clean)
+hiphop_clean
 ```
 
 -   Example 2
 
 ```{r dvs-6-2}
-
+#Lab3 Q9
+hiphop_clean |>
+  filter(familiarity == 5, age < 20) |>
+  arrange(subj, desc(familiarity), by_group = TRUE) |>
+  group_by(familiarity) |>
+  count(word, sort=TRUE)
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -366,13 +475,23 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-7-1}
-
+#Lab3 Q9
+hiphop_clean |>
+  select(subj, sex, age, ethnic) |>
+  distinct(subj, .keep_all = TRUE) |>
+  summary()
+count(hiphop_clean)
+hiphop_clean
 ```
 
 -   Example 2
 
 ```{r dvs-7-2}
-
+# Lab4 Q2
+regions_total <- avocado_clean |>
+  distinct(region)
+regions_major <- tibble(region = c('Northeast', 'Midsouth', 'Southeast', 'West', 'SouthCentral', 'Plains'))
+regions_nonmajor <- tibble(region = c('California', 'GreatLakes', 'Midsouth', 'NorthNewEngland', 'SouthCarolina', "SouthCentral", "TotalUS"))
 ```
 
 ## Program Efficiency
@@ -382,13 +501,23 @@ I've done this in the following provided assignments:
 -   using a single function call
 
 ```{r pe-1-one-call}
-
+#Lab 5 Q2
+ggplot(data = surveys2, mapping = aes(x= year, y= weight, color = genus)) +
+  geom_line() +
+  labs(x= 'Year', y= 'Weight (g)', title = "Rat Genus vs. Weight")
 ```
 
 -   `across()`
 
 ```{r pe-1-across}
-
+#Lab3 Q5
+hiphop_clean <- hiphop |>
+  mutate(
+    across( c(asianMove, blackMove, hispanicMove, nativeMove,
+    SAAMEMove, whiteMove, blackWeekly, jayz, jayz1, barkley,
+    boondocks, boondocks1, monique, bieber), as.factor)) |>
+  drop_na(numPreferredArtists, numOverallArtists) |>
+  select(word, subj, sex, age, ethnic, jayz:fam1) 
 ```
 
 -   `map()` functions
@@ -416,7 +545,14 @@ I've done this in the following provided assignments:
 -   `across()`
 
 ```{r pe-3-across}
-
+#Lab3 Q5
+hiphop_clean <- hiphop |>
+  mutate(
+    across( c(asianMove, blackMove, hispanicMove, nativeMove,
+    SAAMEMove, whiteMove, blackWeekly, jayz, jayz1, barkley,
+    boondocks, boondocks1, monique, bieber), as.factor)) |>
+  drop_na(numPreferredArtists, numOverallArtists) |>
+  select(word, subj, sex, age, ethnic, jayz:fam1) 
 ```
 
 -   `map()` functions (Provide 2 Examples)
@@ -446,11 +582,17 @@ ggplot(data=surveys, mapping = aes(x=weight, y= fct_reorder(species, weight))) +
 -   Example 2
 
 ```{r pe-4-2}
-#lab4 Q3
-major_avocado |>
-  filter(year == '2017', type == 'organic') |>
-  slice_max(region)
-#This is another example that uses modern tools because none of the functions in the code are superceded/deprecated. 
+#PA4 Q1
+military_clean <- military |>
+  mutate(across(.col = `Notes`:`2019`, 
+         .fns = na_if,
+         '. .')) |>
+  mutate(across(.col = `Notes`:`2019`, 
+                .fns = na_if,
+                'xxx')) |>
+  mutate(across(.col = `1988`:`2019`,
+                .fns = as.numeric))
+# This uses modern tools because none of the functions in the code are superceded/deprecated.
 ```
 
 ## Data Simulation & Modeling
@@ -487,13 +629,13 @@ major_avocado |>
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-\-
+-I have revised my thinking throughout the course by modifying my quarto docs that were requested for revision. Most of my revisions included detailed explanations for why I got something as a G instead of an S, and how I figured out how to fix it. To aid myself in this process, I spent extra time asking for support or clarification on problems that I did not get an S on, and really worked towards actually revising and learning from my mistakes rather than just writing a few words about how to fix it. To me, it's important that I learn from what I messed up on, and one of the best ways for me to do that if I'm struggling is to seek extra help from peers and Dr. Theobold, and I found it all the more helpful in my continuation of learning.
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-\-
+-I think I extended my thinking throughout the quarter so far in a couple of different ways. For one thing, I tried out a few different color schemes and packages in some of my assignments, which include the scales package for the axis modification, other color related packages, etc. I found it useful when I was stuck on a problem and I needed to find a way around a roadblock to consult other resources for ideas on what I could to do make my code function well. I think it definitely demonstrates that I have extended my thinking by my integration of different functions and pacakages not explicitly mentioned in class into my assignments.
 
 ## Peer Support & Collaboration
 
