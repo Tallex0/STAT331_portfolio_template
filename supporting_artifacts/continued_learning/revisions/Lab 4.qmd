@@ -1,0 +1,118 @@
+---
+title: "Lab 4"
+author: "Alex Goodman"
+format:
+  html:
+    self-contained: True
+    code-tools: True
+    code-fold: True
+execute:
+  echo: true
+  error: true
+  message: false
+  warning: false
+theme: cerulean
+---
+
+1.) The dataset represents avocado sales prices and volume in the US in 2018.
+
+2.)
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(here)
+avocados <- read_csv(here('Week 4', 'Lab 4', 'avocado.csv'))
+avocado_clean <- avocados |>
+  select('Date', 'AveragePrice', 'type', 'year', 'region', 'Total Volume', '4046', '4225', '4770') |>
+  rename(small_avocado = '4046', large_avocado = '4225', xlarge_avocado = '4770', total_volume = 'Total Volume')
+regions_total <- avocado_clean |>
+  distinct(region)
+regions_major <- tibble(region = c('Northeast', 'Midsouth', 'Southeast', 'West', 'SouthCentral', 'Plains'))
+regions_nonmajor <- tibble(region = c('California', 'GreatLakes', 'Midsouth', 'NorthNewEngland', 'SouthCarolina', "SouthCentral", "TotalUS"))
+
+major_avocado <- avocado_clean |>
+  semi_join(regions_major, by = 'region')
+
+metro_avocado <- avocado_clean |>
+  anti_join(regions_nonmajor, by = 'region') |>
+  anti_join(regions_major, by = 'region') |>
+  filter(region != "TotalUS")
+  
+  
+
+```
+
+3.  
+
+```{r}
+major_avocado |>
+  filter(year == '2017', type == 'organic') |>
+  slice_max(region)
+
+```
+
+The West sold the largest amount of organic small Hass avocados in 2017 (1789024.92).
+
+4\.
+
+```{r}
+major_avocado |>
+  separate(Date, c('Year', 'Month', 'Day'), '-') |>
+  group_by('Month') |>
+  slice_max(total_volume)
+```
+
+The month with the highest total volume according to the output is February.
+
+5\.
+
+```{r}
+top5 <- metro_avocado |>
+  group_by(region)|>
+  summarise(total_avocado = sum(total_volume)) |>
+  slice_max(order_by = total_avocado, n = 5)
+
+metro_avocado |>
+    semi_join(top5, by = 'region') |>
+    ggplot(aes(x=total_volume, y= region)) +
+  geom_boxplot() +
+  labs(x = 'Total Volume', y = ' ', title = 'Total Avocado Volume by Region')
+
+```
+
+6\.
+
+```{r}
+cal_regions <- tibble(region = c('LosAngeles', 'SanDiego', 'Sacramento', 'SanFrancisco'))
+
+cal_avocado <- avocado_clean |>
+  group_by(region, type) |>
+  semi_join(cal_regions, by = 'region') |>
+  summarise(mean_price = mean(AveragePrice)) |>
+  pivot_wider(names_from = type , values_from = mean_price) |>
+  mutate(diff = conventional - organic)
+
+
+  
+```
+
+The regions where avocado price is most different is San Francisco and Sacramento, with respective differences of \$0.81 and \$0.69.
+
+7\.
+
+```{r}
+avocado_final <- avocado_clean|>
+  filter(region %in% c('LosAngeles', 'SanDiego', 'Sacramento', 'SanFrancisco')) |>
+  pivot_longer(small_avocado:xlarge_avocado, names_to = 'size', values_to = 'quantity') |>
+  group_by(region, type, size) |>
+  summarise(mean_sold = mean(quantity), proportion = quantity / total_volume)
+
+
+
+
+  ggplot(data=avocado_final, mapping = aes(x= region, y= proportion, fill = size), stat = 'identity') +
+    geom_col(position = 'fill') + facet_wrap(~type) +
+    labs(x = 'Region of CA', y ='Proportion of Mean Avocados Sold')
+
+```

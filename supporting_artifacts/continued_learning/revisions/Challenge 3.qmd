@@ -1,0 +1,51 @@
+---
+title: "Lab 3"
+author: "Alex Goodman"
+format:
+  html:
+    self-contained: True
+    code-tools: True
+    code-fold: True
+execute:
+  echo: True
+  error: True
+  message: False
+---
+5.1 
+```{r}
+library(tidyverse)
+library(tidyverse)
+library(here)
+hiphop <- read_csv(here("Week 3", "Lab 3", "hiphop.csv"))
+```
+
+```{r}
+
+hiphop_chal <- hiphop |>
+  select(subj, sex, ethnic, intl:hiphop) |>
+  mutate(hiphop, ethnic = if_else(
+    ethnic == 'white', "white", 'non-white')) |>
+  group_by(sex)
+  summarize(hiphop_chal, meanintl = mean(intl), meanhip = mean(hiphop),
+            meanvoc = mean(vocal), meanclass = mean(classical),
+            meanfolk = mean(folk), meanrock = mean(rock), meanpop = mean(pop),
+            meancountry = mean(country), meanalt = mean(alternative))
+
+hiphop_chal <- hiphop |>
+  select(subj, sex, ethnic, intl:hiphop) |>
+  mutate(hiphop, ethnic = if_else(
+    ethnic == 'white', "white", 'non-white')) |>
+  group_by(ethnic)
+  summarize(hiphop_chal, meanintl = mean(intl), meanhip = mean(hiphop),
+            meanvoc = mean(vocal), meanclass = mean(classical),
+            meanfolk = mean(folk), meanrock = mean(rock), meanpop = mean(pop),
+            meancountry = mean(country), meanalt = mean(alternative))
+```
+For males, the highest mean music genre in this study was rock, with an average of 3.06 artists. For females, the highest mean music genre was alternative, with an average of 2.21 artists. For white people, the highest mean music genre was rock, with an average of 2.58 artists. For non-white people, the highest mean music genre was hip-hop with an average of 2.18 artists.
+
+5.2
+After reading the article, one of the main concerns I have regarding this study is about the representation / subsequent omission of rows containing NA. I think that when asked to exclude certain subsets of the data that contain NAs, we are under-representing certain racial/ethnic groups for this study, and thus we have less valid data in terms of those groups. I think in designing a study like this, it is important to take into consideration the design of some of these questions, because the wording/phrasing, and just general topics about the question can lead people to not want to answer them, giving NA data points. Another concern of the issue was where this data was coming from. Yes, it was from a school university in Minnesota, and people could be from all over, but it's important to consider sample size, and regionality when conducting a study like this. Why not survey multiple schools from across the country, instead of just one? Widening the search criteria to expand to other schools would allow more diversity of responses and more of an accurate representation of each racial/ethnic group as a whole, since multiple different regions of the country would be involved with this study, and the data found can be attributed as more credible, providing more clear study results and making sure no group will feel under-represented because of potential discrimination.
+
+
+
+

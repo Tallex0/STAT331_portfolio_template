@@ -1,0 +1,28 @@
+---
+title: "Challenge 2 #1"
+author: "Alex Goodman"
+format:
+  html:
+    self-contained: True
+    code-tools: True
+    code-fold: True
+execute:
+  echo: True
+  error: True
+
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(ggridges)
+surveys <- read_csv(here("Week 2", "Lab 2", "surveys.csv"))
+
+```
+
+```{r}
+ggplot(data=surveys, mapping = aes(y=species, x=weight)) +
+  geom_density_ridges(scale=2) +
+  labs(y="Species", x="Weight (g)", title = "Animal Species vs. Weight")
+```

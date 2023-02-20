@@ -1,0 +1,77 @@
+---
+title: "Lab 5"
+author: "Alex Goodman"
+format:
+  html:
+    self-contained: True
+    code-tools: True
+    code-fold: True
+execute:
+  echo: true
+  error: true
+  message: false
+  warning: false
+theme: cerulean
+---
+
+1\.
+
+```{r}
+library(tidyverse)
+library(here)
+library(forcats)
+library(lubridate)
+library(scales)
+```
+
+```{r}
+surveys <- read_csv(here("Week 2", "Lab 2", "surveys.csv"))
+
+ggplot(data=surveys, mapping = aes(x=weight, y= fct_reorder(species, weight))) +
+  geom_jitter(color= "darkseagreen") +
+  geom_boxplot(outlier.shape = NA, alpha = 0.1) +
+  labs(x="Weight (g)", y= '', title = "Rat Species vs. Weight")
+```
+
+\^code above in #1
+
+```{r}
+surveys2 <- surveys |>
+  select(genus, weight, year)
+
+ggplot(data = surveys2, mapping = aes(x= year, y= weight, color = genus)) +
+  geom_line() +
+  labs(x= 'Year', y= 'Weight (g)', title = "Rat Genus vs. Weight") 
+
+surveys3 <- surveys |>
+  select(genus, weight, year) |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
+
+ggplot(data=surveys3, mapping = aes(x = year, y = mean_weight, color = fct_reorder2(genus, year, mean_weight))) + 
+  geom_line() +
+  labs(x= 'Year', y= '', title = "Rat Genus vs. Mean weight (g)")
+
+
+
+surveys4 <- surveys |>
+  select(genus, weight, day_of_week)
+
+ggplot(data=surveys4, mapping = aes(x = fct_relevel(day_of_week, c('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')), fill = genus)) +
+  geom_bar() +
+  labs(x = 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
+
+
+surveys5 <- surveys |>
+  select(genus, weight, day_of_week)
+
+ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
+  geom_bar() +
+  labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
+
+
+
+
+
+
+```
