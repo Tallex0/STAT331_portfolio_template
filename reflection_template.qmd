@@ -395,7 +395,7 @@ lres <- ggplot(data=fish, mapping = aes(x = rescale_01(length))) +
 
 plot_grid(lnorm, lres, ncol = 1)
 
-#use of new package cowplot / also reorganizing axes so don't have to tilt head
+#use of new package cowplot to stack graphs on top of one another / also reorganizing axes so don't have to tilt head
 ```
 
 -   Example 2
@@ -415,23 +415,21 @@ ggplot(data=surveys, mapping = aes(x=weight, y= fct_reorder(species, weight))) +
 -   Example 1
 
 ```{r dvs-4-1}
-#Lab4 Q6
-cal_avocado <- avocado_clean |>
-  group_by(region, type) |>
-  semi_join(cal_regions, by = 'region') |>
-  summarise(mean_price = mean(AveragePrice)) |>
-  pivot_wider(names_from = type , values_from = mean_price) |>
-  mutate(diff = conventional - organic)
+#Lab 7 Q1
+fish |>
+  summarize(across(.col = `trip`:`species`, 
+         .fns = ~sum(is.na(.x))))
 ```
 
 -   Example 2
 
 ```{r dvs-4-2}
-#Lab5 Q3
-surveys3 <- surveys |>
-  select(genus, weight, year) |>
-  group_by(year, genus) |>
-  summarize(mean_weight = mean(weight))
+#Lab 3 Q6
+hiphop_clean |>
+  distinct(word) |>
+  summarise(across( .cols = `asianMove`:`bieber`, 
+            .fns = ~as.factor(.x))))
+hiphop_clean
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -439,18 +437,6 @@ surveys3 <- surveys |>
 -   Example 1
 
 ```{r dvs-5-1}
-#Lab3 Q9
-hiphop_clean |>
-  select(subj, sex, age, ethnic) |>
-  distinct(subj, .keep_all = TRUE) |>
-  summary()
-count(hiphop_clean)
-hiphop_clean
-```
-
--   Example 2
-
-```{r dvs-5-2}
 #Lab4 Q6
 cal_avocado <- avocado_clean |>
   group_by(region, type) |>
@@ -458,6 +444,17 @@ cal_avocado <- avocado_clean |>
   summarise(mean_price = mean(AveragePrice)) |>
   pivot_wider(names_from = type , values_from = mean_price) |>
   mutate(diff = conventional - organic)
+
+```
+
+-   Example 2
+
+```{r dvs-5-2}
+#Lab5 Q3
+surveys3 <- surveys |>
+  select(genus, weight, year) |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
