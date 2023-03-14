@@ -1,0 +1,39 @@
+---
+title: "PA 9"
+author: "Alex Goodman"
+format:
+  html:
+    self-contained: True
+    code-tools: True
+    code-fold: True
+execute:
+  echo: true
+  error: true
+  message: false
+  warning: false
+theme: cerulean
+---
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+my_model_2 <- penguins |>
+  lm(bill_length_mm ~ bill_depth_mm*species, data = _)
+ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+  geom_point() +
+  stat_smooth(method = "lm") + 
+  labs(x = "Bill Depth (mm)", 
+       y = "Bill Length (mm)")
+summary(my_model_2)
+```
+
+
+
+
+```{r}
+
+```
+
+
+
+
+

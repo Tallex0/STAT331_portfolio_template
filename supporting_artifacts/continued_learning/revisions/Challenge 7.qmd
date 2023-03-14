@@ -1,0 +1,51 @@
+---
+title: "Challenge 7"
+author: "Alex Goodman"
+format:
+  html:
+    self-contained: True
+    code-tools: True
+    code-fold: True
+execute:
+  echo: true
+  error: true
+  message: false
+  warning: false
+theme: cerulean
+---
+```{r}
+#length mm weight oz
+
+correct_lengths <- function(df, lb, ub){
+  length <- pluck(df, "length")
+  length[length < lb | length > ub] <- NA
+  return(data.frame(length))
+}
+fish_tibble <- tibble(fish['length'])
+fish['length'] <- correct_lengths(fish_tibble,127, 384)
+
+correct_weights <- function(df, lb, ub){
+  weight <- pluck(df, "weight")
+  weight[weight < lb | weight > ub] <- NA
+  return(data.frame(weight))
+}
+fish_tibble <- tibble(fish["weight"])
+fish["weight"] <- correct_weights(fish_tibble, 32, 240)
+```
+4.2
+```{r}
+condition_index <- function(df, length, weight){
+   df <- df |>
+    mutate(cond_index := ((({{weight}}) / ({{length}} ^ 3)) * 100))
+   return(df)
+}
+
+fish_cond <- condition_index(fish, length, weight)
+```
+4.3
+```{r}
+ggplot(data=fish_cond, mapping = aes(x = year, y = cond_index, color = section)) +
+  geom_jitter() +
+  labs(x = 'Year', y = NULL, title = 'Fish Condition Index by Section')
+```
+

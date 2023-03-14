@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an B.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an A-.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from a Lab or Challenge assignment where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -285,15 +285,15 @@ ggplot(data=surveys) +
 -   Example 2
 
 ```{r r-3-2}
-#PA3 Q4
-colleges_clean <- colleges_clean |> 
-  mutate(
-    TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
-    TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
-    SAT_AVG = as.numeric(SAT_AVG),
-    ADM_RATE = as.numeric(ADM_RATE),
-    UGDS = as.numeric(UGDS)
-    ) 
+#LAB 7 3.5
+rescale_column <- function(df, var_vec){
+  fish <- fish |>
+    mutate(across(.cols = {{ var_vec }}, 
+                  ~ rescale_01(.x)
+                  )
+           )
+  fish
+}
 ```
 
 ## Data Visualization & Summarization
@@ -450,24 +450,32 @@ cal_avocado <- avocado_clean |>
 -   Example 1
 
 ```{r dvs-6-1}
-#Lab3 Q9
-hiphop_clean |>
-  select(subj, sex, age, ethnic) |>
-  distinct(subj, .keep_all = TRUE) |>
-  summary()
-count(hiphop_clean)
-hiphop_clean
+#lab 9 Q the last one
+allans2 %>%
+    knitr::kable(format = "html", 
+               digits = 3, 
+               col.names = 
+                 c("State", 
+                   "Alan", 
+                   "Allan",
+                   "Allen"),
+               caption = "Proportion of Allans, Allens, and Alans in CA and PA") %>%
+  kableExtra::kable_styling(font_size = 20) %>%
+  kableExtra::kable_classic(html_font = "verdana")
 ```
 
 -   Example 2
 
 ```{r dvs-6-2}
-#Lab3 Q9
-hiphop_clean |>
-  filter(familiarity == 5, age < 20) |>
-  arrange(subj, desc(familiarity), by_group = TRUE) |>
-  group_by(familiarity) |>
-  count(word, sort=TRUE)
+#lab 9 Q allison
+namesAllison |>
+    knitr::kable(format = "html", 
+               digits = 3, 
+               col.names = 
+                 c("State", 
+                   "F", 
+                   "M"),
+               caption = "Number of Allisons in the U.S by State and Sex")
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -475,23 +483,21 @@ hiphop_clean |>
 -   Example 1
 
 ```{r dvs-7-1}
-#Lab3 Q9
-hiphop_clean |>
-  select(subj, sex, age, ethnic) |>
-  distinct(subj, .keep_all = TRUE) |>
-  summary()
-count(hiphop_clean)
-hiphop_clean
+#Lab9 Q last one
+namesAllison |>
+    knitr::kable(format = "html", 
+               digits = 3, 
+               col.names = 
+                 c("State", 
+                   "F", 
+                   "M"),
+               caption = "Number of Allisons in the U.S by State and Sex")
 ```
 
 -   Example 2
 
 ```{r dvs-7-2}
-# Lab4 Q2
-regions_total <- avocado_clean |>
-  distinct(region)
-regions_major <- tibble(region = c('Northeast', 'Midsouth', 'Southeast', 'West', 'SouthCentral', 'Plains'))
-regions_nonmajor <- tibble(region = c('California', 'GreatLakes', 'Midsouth', 'NorthNewEngland', 'SouthCarolina', "SouthCentral", "TotalUS"))
+
 ```
 
 ## Program Efficiency
@@ -523,7 +529,10 @@ hiphop_clean <- hiphop |>
 -   `map()` functions
 
 ```{r pe-1-map-1}
-#havent covered yet
+#Lab 8 Part 1.1
+map_chr(1:12, ~sing_day(xmas2, .x, Full.Phrase)) |>
+  str_c(collapse = '\n\n') |>
+  cat()
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -531,13 +540,28 @@ hiphop_clean <- hiphop |>
 -   Example 1
 
 ```{r pe2-1}
-#havent covered yet
+# Lab 7 Q 3.1/3.2
+rescale_01 <- function(vec) {
+    stopifnot(is.numeric(vec), length(vec) > 1)
+    min_vec = min(vec)
+    vecscale = (vec - min_vec / 
+           (max(vec) - min_vec))
+    return(vecscale)
+}
 ```
 
 -   Example 2
 
 ```{r pe2-2}
-#havent covered yet
+# Lab 7 Q6
+rescale_column <- function(df, var_vec){
+  fish <- fish |>
+    mutate(across(.cols = {{ var_vec }}, 
+                  ~ rescale_01(.x)
+                  )
+           )
+  fish
+}
 ```
 
 **PE-3:I can use iteration to reduce repetition in my code.**
@@ -558,11 +582,17 @@ hiphop_clean <- hiphop |>
 -   `map()` functions (Provide 2 Examples)
 
 ```{r pe-3-map-1}
-#havent covered yet
+# PA 8 Step 1
+purrr::map_chr(xmas$Gift.Item, pluralize_gift)
+
 ```
 
 ```{r pe-3-map-2}
-#havent covered yet
+# Lab 8 Step 2
+map_chr(1:12, ~sing_day(xmas2, .x, Full.Phrase)) |>
+  str_c(collapse = '\n\n') |>
+  cat()
+
 ```
 
 **PE-4: I can use modern tools when carrying out my analysis.**
@@ -602,13 +632,27 @@ military_clean <- military |>
 -   Example 1
 
 ```{r dsm-1-1}
-#havent covered yet
+# PA 9 Q 1
+my_model_2 <- penguins |>
+  lm(bill_length_mm ~ bill_depth_mm*species, data = _)
+ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+  geom_point() +
+  stat_smooth(method = "lm") + 
+  labs(x = "Bill Depth (mm)", 
+       y = "Bill Length (mm)")
+summary(my_model_2)
+
 ```
 
 -   Example 2
 
 ```{r dsm-1-2}
-#havent covered yet
+# lab 9 q4
+allison_lm <- my_viz |>
+  lm(total_names ~ Year, data = _) 
+  
+broom::tidy(allison_lm)
+
 ```
 
 **DSM-2: I can fit a linear regression and extract necessary summary measures.**
@@ -616,13 +660,25 @@ military_clean <- military |>
 -   Example 1
 
 ```{r dsm-2-1}
-#havent covered yet
+# PA 9 Q1
+my_model_2 <- penguins |>
+  lm(bill_length_mm ~ bill_depth_mm*species, data = _)
+ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+  geom_point() +
+  stat_smooth(method = "lm") + 
+  labs(x = "Bill Depth (mm)", 
+       y = "Bill Length (mm)")
+summary(my_model_2)
 ```
 
 -   Example 2
 
 ```{r dsm-2-2}
-#havent covered yet
+# Lab 9 Q4
+allison_lm <- my_viz |>
+  lm(total_names ~ Year, data = _) 
+  
+broom::tidy(allison_lm)
 ```
 
 ## Revising My Thinking
