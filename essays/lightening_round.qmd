@@ -3,3 +3,7 @@ title: "Lightening Round Essays"
 format: html
 editor: visual
 ---
+
+1.) If Rachel doesn't earn an A, then nobody should, because Rachel has been a very good team member when we worked together, and demonstrated in our PAs together that she is learning the material well, and is very helpful at explaining things if the rest of the group needs help.
+
+2.) One topic that was the most difficult for me was to learn the order/when to use the dplyr verbs/functions in the labs/challenges, because there were a lot of functions introduced and it was a lot of information to remember/apply initially since it was so new to me (e.g. Lab 3, since we had to figure out how to best clean and organize the data, and that was difficult for me to grasp early on.)
