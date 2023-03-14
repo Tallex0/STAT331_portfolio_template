@@ -53,8 +53,9 @@ ggplot(data=fish_clean, mapping = aes(
 ```{r}
 rescale_01 <- function(vec) {
     stopifnot(is.numeric(vec) | length(vec) > 1)
-    vecscale = (vec - min(vec)) / 
-           (max(vec) - min(vec))
+    min_vec = min(vec)
+    vecscale = (vec - min_vec) / 
+           (max(vec) - min_vec)
     return(vecscale)
 }
 
