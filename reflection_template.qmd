@@ -235,12 +235,21 @@ cal_avocado <- avocado_clean |>
 
 I've done this in the following provided assignments:
 
+-PA 3
+
+-Lab 8 / PA 8 / Challenge 8
+
+-Lab 9 / Challenge 9
+
+-Lab 7
+
 **R-2: I can write well documented and tidy code.**
 
 -   Example 1
 
 ```{r r-2-1}
 #PA4 Q1
+#replacing w/NAs
 military <- read_xlsx(here::here("data", 
                                  "gov_spending_per_capita.xlsx"), 
                       sheet = "Share of Govt. spending", 
@@ -248,20 +257,21 @@ military <- read_xlsx(here::here("data",
                       n_max = 191)
 
 military_clean <- military |>
-  mutate(across(.col = `Notes`:`2019`, 
-         .fns = na_if,
-         '. .')) |>
-  mutate(across(.col = `Notes`:`2019`, 
-                .fns = na_if,
-                'xxx')) |>
-  mutate(across(.col = `1988`:`2019`,
-                .fns = as.numeric))
+  mutate(across(.cols = `Notes`:`2019`, 
+         .fns = ~na_if(.x),
+         ) |>
+  mutate(across(.cols = `Notes`:`2019`, 
+                .fns = ~na_if(.x),
+                ) |>
+  mutate(across(.cols = `1988`:`2019`,
+                .fns = ~as.numeric(.x)))
 ```
 
 -   Example 2
 
 ```{r r-2-2}
 #PA3 Q1
+#selecting the required variables from a dataset
 colleges_clean <- colleges |> 
   select(INSTNM, CITY, STABBR, ZIP,
          ADM_RATE, SAT_AVG, UGDS,
@@ -274,12 +284,15 @@ colleges_clean <- colleges |>
 -   Example 1
 
 ```{r r-3-1}
-#Lab2 Q7
-ggplot(data=surveys) + 
-  geom_jitter(mapping=aes(x=weight, y=hindfoot_length, alpha = 0.1 ), position="jitter") + 
-  labs(title = "Species Weight vs. Hindfoot Length", 
-  x= "Weight (g)", y= "Hindfoot Length (mm)") +
-  facet_wrap(~species)
+#Lab 7 Part 1
+rescale_01 <- function(vec) {
+    stopifnot(is.numeric(vec) | length(vec) > 1)
+    min_vec = min(vec)
+    vecscale = (vec - min_vec) / 
+           (max(vec) - min_vec)
+    return(vecscale)
+}
+
 ```
 
 -   Example 2
@@ -313,13 +326,10 @@ ggplot(data=surveys) +
 -   numeric variables and categorical variables
 
 ```{r dvs-2-num-cat}
-#Lab5 Q6
-surveys5 <- surveys |>
-  select(genus, weight, day_of_week)
-
-ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
-  geom_bar() +
-  labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
+#challenge 2
+ggplot(data=surveys, mapping = aes(y=species, x=weight)) +
+  geom_density_ridges(scale=2) +
+  labs(y="Species", x="Weight (g)", title = "Animal Species vs. Weight")
 ```
 
 -   categorical variables
@@ -335,14 +345,13 @@ hiphop_clean
 -   dates
 
 ```{r dvs-2-date}
-#PA 5 Q1
-thanksgiving <- ymd(20181122, tz = "America/Los_Angeles")
+#Lab 5 last Q
+surveys5 <- surveys |>
+  select(genus, weight, day_of_week)
 
-         
-int_thanks <- interval((thanksgiving) - days(35), (thanksgiving) + days(35))
-
-suspects <- suspects %>% 
-  filter(Time.Spotted %within% int_thanks)
+ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
+  geom_bar() +
+  labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -374,13 +383,19 @@ ggplot(data=surveys) +
 -   Example 1
 
 ```{r dvs-3-1}
-# Lab5 Q 6
-surveys5 <- surveys |>
-  select(genus, weight, day_of_week)
+#Lab 7 Q 3.4
+#| layout-ncol: 2
+lnorm <- ggplot(data=fish, mapping = aes(x=length)) +
+  geom_histogram() +
+  labs(x = NULL, y = NULL, title = 'Blackfoot Fish Length vs. Rescaled Length')
 
-ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
-  geom_bar() +
-  labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
+lres <- ggplot(data=fish, mapping = aes(x = rescale_01(length))) +
+  geom_histogram() +
+  labs(x = 'Length', y = NULL)
+
+plot_grid(lnorm, lres, ncol = 1)
+
+#use of new package cowplot / also reorganizing axes so don't have to tilt head
 ```
 
 -   Example 2
@@ -483,7 +498,7 @@ namesAllison |>
 -   Example 1
 
 ```{r dvs-7-1}
-#Lab9 Q last one
+#Lab9 allison
 namesAllison |>
     knitr::kable(format = "html", 
                digits = 3, 
@@ -497,7 +512,18 @@ namesAllison |>
 -   Example 2
 
 ```{r dvs-7-2}
-
+#lab 9 Q the last one
+allans2 %>%
+    knitr::kable(format = "html", 
+               digits = 3, 
+               col.names = 
+                 c("State", 
+                   "Alan", 
+                   "Allan",
+                   "Allen"),
+               caption = "Proportion of Allans, Allens, and Alans in CA and PA") %>%
+  kableExtra::kable_styling(font_size = 20) %>%
+  kableExtra::kable_classic(html_font = "verdana")
 ```
 
 ## Program Efficiency
@@ -507,10 +533,10 @@ namesAllison |>
 -   using a single function call
 
 ```{r pe-1-one-call}
-#Lab 5 Q2
-ggplot(data = surveys2, mapping = aes(x= year, y= weight, color = genus)) +
-  geom_line() +
-  labs(x= 'Year', y= 'Weight (g)', title = "Rat Genus vs. Weight")
+#Lab 9 Q9
+allans2 <- namesA |>
+  rename(sex = Gender) |>
+  filter(Year == 2000, Name == 'Allan' | Name == 'Alan' | Name == 'Allen', State == 'PA' | State == 'CA' )
 ```
 
 -   `across()`
@@ -519,9 +545,8 @@ ggplot(data = surveys2, mapping = aes(x= year, y= weight, color = genus)) +
 #Lab3 Q5
 hiphop_clean <- hiphop |>
   mutate(
-    across( c(asianMove, blackMove, hispanicMove, nativeMove,
-    SAAMEMove, whiteMove, blackWeekly, jayz, jayz1, barkley,
-    boondocks, boondocks1, monique, bieber), as.factor)) |>
+    across( .cols = `asianMove`:`bieber`, 
+            .fns = ~as.factor(.x))) |>
   drop_na(numPreferredArtists, numOverallArtists) |>
   select(word, subj, sex, age, ethnic, jayz:fam1) 
 ```
@@ -572,9 +597,8 @@ rescale_column <- function(df, var_vec){
 #Lab3 Q5
 hiphop_clean <- hiphop |>
   mutate(
-    across( c(asianMove, blackMove, hispanicMove, nativeMove,
-    SAAMEMove, whiteMove, blackWeekly, jayz, jayz1, barkley,
-    boondocks, boondocks1, monique, bieber), as.factor)) |>
+    across( .cols = `asianMove`:`bieber`, 
+            .fns = ~as.factor(.x))) |>
   drop_na(numPreferredArtists, numOverallArtists) |>
   select(word, subj, sex, age, ethnic, jayz:fam1) 
 ```
@@ -613,16 +637,23 @@ ggplot(data=surveys, mapping = aes(x=weight, y= fct_reorder(species, weight))) +
 
 ```{r pe-4-2}
 #PA4 Q1
+#replacing w/NAs
+military <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip = 7, 
+                      n_max = 191)
+
 military_clean <- military |>
-  mutate(across(.col = `Notes`:`2019`, 
-         .fns = na_if,
-         '. .')) |>
-  mutate(across(.col = `Notes`:`2019`, 
-                .fns = na_if,
-                'xxx')) |>
-  mutate(across(.col = `1988`:`2019`,
-                .fns = as.numeric))
-# This uses modern tools because none of the functions in the code are superceded/deprecated.
+  mutate(across(.cols = `Notes`:`2019`, 
+         .fns = ~na_if(.x),
+         ) |>
+  mutate(across(.cols = `Notes`:`2019`, 
+                .fns = ~na_if(.x),
+                ) |>
+  mutate(across(.cols = `1988`:`2019`,
+                .fns = ~as.numeric(.x)))
+  #Function is updated to use the right components of across()
 ```
 
 ## Data Simulation & Modeling
