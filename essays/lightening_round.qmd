@@ -7,3 +7,9 @@ editor: visual
 1.) If Rachel doesn't earn an A, then nobody should, because Rachel has been a very good team member when we worked together, and demonstrated in our PAs together that she is learning the material well, and is very helpful at explaining things if the rest of the group needs help.
 
 2.) One topic that was the most difficult for me was to learn the order/when to use the dplyr verbs/functions in the labs/challenges, because there were a lot of functions introduced and it was a lot of information to remember/apply initially since it was so new to me (e.g. Lab 3, since we had to figure out how to best clean and organize the data, and that was difficult for me to grasp early on.)
+
+3.) I think one of the more straightforward parts of class for me was actually one of the last topics we covered (linear regression), because I had previous exposure to the concepts in other classes, and I thought it was more fun and practical to a stats major to apply the concepts we learned to statistical processes like regression.
+
+4.) The part of class that interested me the most was the same topics on regression at the end of the quarter, because I enjoyed putting the R skills I've been learning this quarter to the test with a statistical concept I learned in a prior class (it was fun to tie things together.)
+
+5.) One piece of advice that I would give to incoming STAT-331 students would be to not underestimate R or data science, and see it as a challenge, but not something that is impossible, only something that is difficult but possible to grasp with had .

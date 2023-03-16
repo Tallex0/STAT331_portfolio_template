@@ -135,7 +135,8 @@ message %>%
 surveys4 <- surveys |>
   select(genus, weight, day_of_week)
 
-ggplot(data=surveys4, mapping = aes(x = fct_relevel(day_of_week, c('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')), fill = genus)) +
+ggplot(data=surveys4, mapping = aes(x = fct_relevel(day_of_week, 
+c('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')), fill = genus)) +
   geom_bar() +
   labs(x = 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
@@ -212,7 +213,8 @@ metro_avocado <- avocado_clean |>
 # lab4 Q7
 avocado_final <- avocado_clean|>
   filter(region %in% c('LosAngeles', 'SanDiego', 'Sacramento', 'SanFrancisco')) |>
-  pivot_longer(small_avocado:xlarge_avocado, names_to = 'size', values_to = 'quantity') |>
+  pivot_longer(
+    small_avocado:xlarge_avocado, names_to = 'size', values_to = 'quantity') |>
   group_by(region, type, size) |>
   summarise(mean_sold = mean(quantity), proportion = quantity / total_volume)
 ```
@@ -320,7 +322,10 @@ rescale_column <- function(df, var_vec){
 # Code for question 4! 
 ggplot(data=surveys) + 
   geom_point(mapping=aes(x=weight, y=hindfoot_length)) +
-  labs(title = "Species Weight vs. Hindfoot Length", x= "Weight (g)", y= "Hindfoot Length (mm)")
+  labs(title = "Species Weight vs. Hindfoot Length", 
+       x= "Weight (g)", 
+       y= "Hindfoot Length (mm)"
+       )
 ```
 
 -   numeric variables and categorical variables
@@ -349,7 +354,8 @@ hiphop_clean
 surveys5 <- surveys |>
   select(genus, weight, day_of_week)
 
-ggplot(data=surveys5, mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
+ggplot(data=surveys5, 
+       mapping = aes(x = fct_collapse(day_of_week, weekday = c('Mon', 'Tue', 'Wed', 'Thu', 'Fri'), weekend = c('Sat', 'Sun')), fill=genus)) +
   geom_bar() +
   labs(x= 'Day of Week', y = '', title = 'Number of Rats per Day of Week')
 ```
@@ -373,7 +379,8 @@ ggplot(data=surveys4, mapping = aes(x = fct_relevel(day_of_week, c('Mon', 'Tue',
 ```{r dvs-2-2}
 #Lab2 Q6
 ggplot(data=surveys) + 
-  geom_jitter(mapping=aes(x=weight, y=hindfoot_length, alpha = 0.1 ), position="jitter") + 
+  geom_jitter(mapping=aes(x=weight, y=hindfoot_length, alpha = 0.1 ), 
+              position="jitter") + 
   labs(title = "Species Weight vs. Hindfoot Length", 
   x= "Weight (g)", y= "Hindfoot Length (mm)")
 ```
@@ -533,7 +540,9 @@ allans2 %>%
 #Lab 9 Q9
 allans2 <- namesA |>
   rename(sex = Gender) |>
-  filter(Year == 2000, Name == 'Allan' | Name == 'Alan' | Name == 'Allen', State == 'PA' | State == 'CA' )
+  filter(Year == 2000, 
+         Name == 'Allan' | Name == 'Alan' | Name == 'Allen', 
+         State == 'PA' | State == 'CA' )
 ```
 
 -   `across()`
@@ -663,7 +672,9 @@ military_clean <- military |>
 # PA 9 Q 1
 my_model_2 <- penguins |>
   lm(bill_length_mm ~ bill_depth_mm*species, data = _)
-ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, 
+                                      y = bill_length_mm, 
+                                      color = species)) +
   geom_point() +
   stat_smooth(method = "lm") + 
   labs(x = "Bill Depth (mm)", 
@@ -691,7 +702,9 @@ broom::tidy(allison_lm)
 # PA 9 Q1
 my_model_2 <- penguins |>
   lm(bill_length_mm ~ bill_depth_mm*species, data = _)
-ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+ggplot(data=my_model_2, mapping = aes(x = bill_depth_mm, 
+                                      y = bill_length_mm, 
+                                      color = species)) +
   geom_point() +
   stat_smooth(method = "lm") + 
   labs(x = "Bill Depth (mm)", 
